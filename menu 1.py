@@ -16,6 +16,14 @@ def delete_usuario(nome, sobrenome):
     mydoc = mycol.delete_one(myquery)
     print("Deletado o usuário ", mydoc)
 
+def delete_vendedor(nome, sobrenome):
+    #Delete
+    global db
+    mycol = db.usuario
+    myquery = {"nome": nome, "sobrenome":sobrenome}
+    mydoc = mycol.delete_one(myquery)
+    print("Deletando o vendedor ", mydoc)
+
 def create_usuario():
     #Insert
     global db
@@ -44,6 +52,39 @@ def create_usuario():
         end.append(endereco) #estou inserindo na lista
         key = input("Deseja cadastrar um novo endereço (S/N)? ")
     mydoc = { "nome": nome, "sobrenome": sobrenome, "cpf": cpf, "end": end }
+    x = mycol.insert_one(mydoc)
+    print("Documento inserido com ID ", x.inserted_id)
+
+def create_vendedor():
+    #Insert
+    global db
+    mycol = db.vendedor
+    print("\nInserindo um novo vendedor")
+    nome = input("Nome: ")
+    sobrenome = input("Sobrenome: ")
+    cpf = input("CPF: ")
+    email = input("E-mail: ")
+    cnpj = input("CNPJ: ")
+    key = 1
+    end = []
+    while (key != 'N'):
+        rua = input("Rua: ")
+        num = input("Num: ")
+        bairro = input("Bairro: ")
+        cidade = input("Cidade: ")
+        estado = input("Estado: ")
+        cep = input("CEP: ")
+        endereco = {        #isso nao eh json, isso é chave-valor, eh um obj
+            "rua":rua,
+            "num": num,
+            "bairro": bairro,
+            "cidade": cidade,
+            "estado": estado,
+            "cep": cep
+        }
+        end.append(endereco) #estou inserindo na lista
+        key = input("Deseja cadastrar um novo endereço (S/N)? ")
+    mydoc = { "nome": nome, "sobrenome": sobrenome, "cpf": cpf, "email": email, "cnpj": cnpj, "end": end }
     x = mycol.insert_one(mydoc)
     print("Documento inserido com ID ", x.inserted_id)
 
@@ -118,7 +159,20 @@ while (key != 'S'):
             delete_usuario(nome, sobrenome)
             
     elif (key == '2'):
-        print("Menu do Vendedor")        
+        print("Menu do Vendedor")
+        print("1-Create Vendedor")
+        print("4-Delete Vendedor")
+        sub = input("Digite a opção desejada? (V para voltar) ")
+        if (sub == '1'):
+            print("Create Vendedor")
+            create_vendedor()
+
+        elif (sub == '4'):
+            print("Delete Vendedor")
+            nome = input("Nome a ser deletado: ")
+            sobrenome = input("Sobrenome a ser deletado: ")
+            delete_vendedor(nome, sobrenome)
+
     elif (key == '3'):
         print("Menu do Produto")        
 
