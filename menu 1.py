@@ -1,7 +1,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-uri = "mongodb+srv://jonas:PCpyir20UvSL2v40@nosql.ocxhdgk.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
+uri = "mongodb+srv://jonas:<password>@nosql.ocxhdgk.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 global db
