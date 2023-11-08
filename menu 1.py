@@ -450,6 +450,7 @@ while (key != 'S'):
             print("Adicionar Favorito")
             create_favorito()
         elif sub == '2':
+            get_all("usuario")
             usuario_id = input("Digite o ID do usuário para listar seus favoritos: ")
             list_favoritos(usuario_id)
         elif sub == '3':
