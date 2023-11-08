@@ -1,11 +1,22 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-uri = "mongodb+srv://jonas:<password>@nosql.ocxhdgk.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
+uri = "mongodb+srv://jonas:zlVsnz3v8A59vGwo@nosql.ocxhdgk.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 global db
 db = client.biblioteca
+
+""" GET_ALL """
+
+def get_all(collection_name):
+    global db
+    mycol = db[collection_name]
+    results = mycol.find({})
+    for doc in results:
+        print(f"{collection_name}s disponíveis: ")
+        print("ID:", doc['_id'])
+        print("Nome:", doc['nome'])
 
 """ USUARIO """
 
@@ -294,6 +305,37 @@ def delete_compra(compra_id):
     mydoc = mycol.delete_one(myquery)
     print("Compra deletada com ID ", mydoc.deleted_id)
 
+""" FAVORITOS """
+
+def create_favorito():
+    global db
+    mycol = db.favorito
+    get_all("usuario")
+    print("\nAdicionando um novo favorito")
+    usuario_id = input("ID do usuário: ")
+    get_all("produto")
+    produto_id = input("ID do produto: ")
+    mydoc = {"usuario_id": usuario_id, "produto_id": produto_id}
+    x = mycol.insert_one(mydoc)
+    print("Favorito inserido com ID ", x.inserted_id)
+
+
+def list_favoritos(usuario_id):
+    global db
+    mycol = db.favorito
+    print("Favoritos do usuário: ")
+    myquery = {"usuario_id": usuario_id}
+    mydoc = mycol.find(myquery)
+    for x in mydoc:
+        print("Produto ID:", x["produto_id"])
+
+
+def delete_favorito(usuario_id, produto_id):
+    global db
+    mycol = db.favorito
+    myquery = {"usuario_id": usuario_id, "produto_id": produto_id}
+    mydoc = mycol.delete_one(myquery)
+    print("Favorito deletado com ID ", mydoc.deleted_id)
 
 """ CLI """
 
@@ -304,6 +346,7 @@ while (key != 'S'):
     print("2-CRUD Vendedor")
     print("3-CRUD Produto")
     print("4-CRUD Comprar")
+    print("5- CRUD Favoritos")
     key = input("Digite a opção desejada? (S para sair) ")
 
     if (key == '1'):
@@ -397,5 +440,21 @@ while (key != 'S'):
             print("Delete Compra")
             compra_id = input("ID a ser deletado: ")
             delete_compra(compra_id)
+    if key == '5':
+        print("Menu de Favoritos")
+        print("1. Adicionar Favorito")
+        print("2. Listar Favoritos")
+        print("3. Remover Favorito")
+        sub = input("Digite a opção desejada? (V para voltar) ")
+        if sub == '1':
+            print("Adicionar Favorito")
+            create_favorito()
+        elif sub == '2':
+            usuario_id = input("Digite o ID do usuário para listar seus favoritos: ")
+            list_favoritos(usuario_id)
+        elif sub == '3':
+            usuario_id = input("ID do usuário: ")
+            produto_id = input("ID do produto: ")
+            delete_favorito(usuario_id, produto_id)
     else:
         print("Tchau Prof...")
